@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Cart</title>
+</head>
+<body>
+    <header>
+        <nav>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="login.html">Contact Us</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+          <div class="search-bar">
+            <input type="text" placeholder="Search products">
+            <button id = "Search">Search</button>
+          </div>
+          <div>
+            <button> <a href="login.html">Login</a></button>
+            <span>OR</span>
+            <button> <a href="login.html">Register</a></button>
+          </div>
+        </nav>
+      </header>
+      <h1>Shopping Cart</h1>
+      <hr>
+    <div class="container" id="content"> </div>
+    <footer>
+      <div class="cardtext-center">
+        <div class="card-body">
+          <p class="card-text"> Do not Hesitate to Contact Us on our Email : javascript@123.com  .</p>
+          <button> <a href="index.html">Back Home</a></button>
+          <br><br><br>
+        </div>
+        
+      </div>
+    </footer>
+
+   
+    <script>
+
+          if (!sessionStorage.getItem('cart')) {
+            sessionStorage.setItem('cart', JSON.stringify([]));
+          }
+
+          function updateCartCount() {
+            var cartCount = document.getElementById('cartCount');
+            var cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+            cartCount.innerText = cart.length.toString();
+          }
+
+          function displayHomePage() {
+            var content = document.getElementById('content');
+
+            // Display 10 product cards manually
+            for (var i = 1; i <= 8; i++) {
+              var randomCategory = productCategories[Math.floor(Math.random() * productCategories.length)];
+              content.innerHTML += `
+                <div class="card" id="product${i}" data-category="${randomCategory}">
+                  <img src="./images/${i}.jpg" alt="Product ${i}">
+                  <h3>Product ${i}</h3>
+                  <p>Description of Product ${i}.</p>
+                  <p>Category: ${randomCategory}</p>
+                  <p>Price: $${i * 10}</p>
+                  <button onclick="addToCart(${i}, ${i * 10})">Add to Cart</button>
+                </div>
+              `;
+            }
+
+            // Update the cart count
+            updateCartCount();
+          }
+
+          function addToCart(productId, price) {
+            var product = {
+              id: productId,
+              name: `Product ${productId}`,
+              description: `Description of Product ${productId}.`,
+              category: document.getElementById(`product${productId}`).getAttribute('data-category'),
+              price: price
+            };
+
+            var cart = JSON.parse(sessionStorage.getItem('cart'));
+
+            cart.push(product);
+
+            sessionStorage.setItem('cart', JSON.stringify(cart));
+
+            alert(`Product ${productId} added to the cart with price $${price}!`);
+
+            updateCartCount();
+          }
+
+          function displayShoppingCart() {
+            var content = document.getElementById('content');
+            content.innerHTML = '';
+
+            var cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+            if (cart.length === 0) {
+              content.innerHTML += '<p>Your shopping cart is empty.</p>';
+            } else {
+              cart.forEach(product => {
+                content.innerHTML += `
+                  <div class="cart-item">
+                    <img src="images/${product.id}.jpg" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <p>Category: ${product.category}</p>
+                    <p>Price: $${product.price}</p>
+                    
+                  </div>
+                `;
+              });
+            }
+          }
+          displayShoppingCart();
+          // Initial display
+          displayHomePage();
+
+    </script>
+</body>
+</html>
